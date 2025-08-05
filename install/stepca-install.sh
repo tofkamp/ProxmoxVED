@@ -28,13 +28,20 @@ msg_ok "Installed Step CA"
 
 
 msg_info "Config Step CA"
+mkdir /opt/step-ca
+mkdir /opt/step-ca/{certs,secrets}
 useradd --user-group --system --home /opt/step-ca --shell /bin/false step
 
-CA_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c23)
-SUBCA_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c23)
+CA_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c33)
+SUBCA_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c33)
 #echo $CA_PASS >/opt/step-ca/CApassword.txt
 echo "$SUBCA_PASS" >/opt/step-ca/password.txt
+
+export STEPPATH="/opt/step-ca"
 # iets van step ca init
+# --kty OKP --curve Ed25519
+step crypto keypair /opt/step-ca/certs/root_ca.crt /opt/step-ca/secrets/root_ca_key  --kty=EC -curve=P-521 --password-file=/opt/step-ca/CApassword.txt
+step crypto keypair /opt/step-ca/certs/intermediate_ca.crt /opt/step-ca/secrets/ntermediate_ca_key  --kty=EC -curve=P-256 --password-file=/opt/step-ca/password.txt
 {
   echo "Step CA-Credentials"
   echo "Step CA Password: $CA_PASS"
