@@ -13,14 +13,14 @@ setting_up_container
 network_check
 update_os
 
-msg_info "Installing Dependencies"
-$STD apt-get install -y \
-  libcap2-bin 
-msg_ok "Installed Dependencies"
+#msg_info "Installing Dependencies"
+#$STD apt-get install -y \
+#  libcap2-bin 
+#msg_ok "Installed Dependencies"
 
 msg_info "Installing Step CA"
-apt-get update && apt-get install -y --no-install-recommends curl vim gpg ca-certificates
-curl -fsSL https://packages.smallstep.com/keys/apt/repo-signing-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/smallstep.asc
+$STD apt-get update && apt-get install -y --no-install-recommends curl vim gpg ca-certificates
+curl -fsSL https://packages.smallstep.com/keys/apt/repo-signing-key.gpg -o /etc/apt/trusted.gpg.d/smallstep.asc
 echo 'deb [signed-by=/usr/share/keyrings/smallstep.asc] https://packages.smallstep.com/stable/debian debs main' | sudo tee /etc/apt/sources.list.d/smallstep.list  >/dev/null
 $STD apt-get update
 $STD apt-get -y install step-cli step-ca
