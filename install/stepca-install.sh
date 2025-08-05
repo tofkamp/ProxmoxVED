@@ -15,7 +15,7 @@ update_os
 
 msg_info "Installing Dependencies"
 $STD apt-get install -y \
-  setcap 
+  libcap2-bin 
 msg_ok "Installed Dependencies"
 
 msg_info "Installing Step CA"
