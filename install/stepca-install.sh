@@ -19,7 +19,8 @@ update_os
 #msg_ok "Installed Dependencies"
 
 msg_info "Installing Step CA"
-$STD apt-get update && apt-get install -y --no-install-recommends curl gpg ca-certificates
+$STD apt-get update
+$STD apt-get install -y --no-install-recommends curl ca-certificates
 curl -fsSL https://packages.smallstep.com/keys/apt/repo-signing-key.gpg -o /etc/apt/trusted.gpg.d/smallstep.asc
 echo 'deb [signed-by=/etc/apt/trusted.gpg.d/smallstep.asc] https://packages.smallstep.com/stable/debian debs main' | sudo tee /etc/apt/sources.list.d/smallstep.list  >/dev/null
 $STD apt-get update
@@ -39,9 +40,9 @@ echo $CA_PASS >/opt/step-ca/CApassword.txt
 echo "$SUBCA_PASS" >/opt/step-ca/password.txt
 
 export STEPPATH="/opt/step-ca"
-step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
+$STD step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
 # change password of subCA
-step crypto change-pass $(step path)/secrets/intermediate_ca_key --password-file=/opt/step-ca/CApassword.txt --new-password-file=/opt/step-ca/password.txt
+$STD step crypto change-pass $(step path)/secrets/intermediate_ca_key --password-file=/opt/step-ca/CApassword.txt --new-password-file=/opt/step-ca/password.txt --force
 chown -R step:step /opt/step-ca
 chmod -R og-rwx /opt/step-ca
 {
@@ -49,11 +50,13 @@ chmod -R og-rwx /opt/step-ca
   echo "Step CA Password: $CA_PASS"
   echo "Step CA SubCA Password: $SUBCA_PASS"
   echo "Fingerprint of CA:" `step certificate fingerprint /opt/step-ca/certs/root_ca.crt`
-  echo "Step CA root public key, to be installed on every server:"
+  echo "Root certificates are available at https://ca.example.com:443/roots.pem"
+  echo "ACME server URL: https://ca.example.com:443/acme/acme/directory"
   cat /opt/step-ca/certs/root_ca.crt
-} >>~/setpca.creds
+} >>~/stepca.creds
 
 #################
+# motd heeft geen kronkeltje voor root
 # verander geldigheidsduur
 # verander domeinen
 # version textfile
