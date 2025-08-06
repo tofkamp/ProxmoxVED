@@ -26,32 +26,40 @@ $STD apt-get update
 $STD apt-get -y install step-cli step-ca
 msg_ok "Installed Step CA"
 
+#################
+# vraag FQDN of server
 
 msg_info "Config Step CA"
 mkdir /opt/step-ca
-mkdir /opt/step-ca/{certs,secrets}
 useradd --user-group --system --home /opt/step-ca --shell /bin/false step
 
-CA_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c33)
-SUBCA_PASS=$(openssl rand -base64 18 | tr -dc 'a-zA-Z0-9' | head -c33)
-#echo $CA_PASS >/opt/step-ca/CApassword.txt
+CA_PASS=$(openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33)
+SUBCA_PASS=$(openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33)
+echo $CA_PASS >/opt/step-ca/CApassword.txt
 echo "$SUBCA_PASS" >/opt/step-ca/password.txt
 
 export STEPPATH="/opt/step-ca"
-# iets van step ca init
-# --kty OKP --curve Ed25519
-step crypto keypair /opt/step-ca/certs/root_ca.crt /opt/step-ca/secrets/root_ca_key  --kty=EC -curve=P-521 --password-file=/opt/step-ca/CApassword.txt
-step crypto keypair /opt/step-ca/certs/intermediate_ca.crt /opt/step-ca/secrets/ntermediate_ca_key  --kty=EC -curve=P-256 --password-file=/opt/step-ca/password.txt
+step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
+# change password of subCA
+step crypto change-pass $(step path)/secrets/intermediate_ca_key --password-file=/opt/step-ca/CApassword.txt --new-password-file=/opt/step-ca/password.txt
+chown -R step:step /opt/step-ca
+chmod -R og-rwx /opt/step-ca
 {
   echo "Step CA-Credentials"
   echo "Step CA Password: $CA_PASS"
   echo "Step CA SubCA Password: $SUBCA_PASS"
-  echo "Fingerprint of CA: $CA_FINGERPRINT"
+  echo "Fingerprint of CA:" `step certificate fingerprint /opt/step-ca/certs/root_ca.crt`
+  echo "Step CA root public key, to be installed on every server:"
+  cat /opt/step-ca/certs/root_ca.crt
 } >>~/setpca.creds
-msg_ok "Configed Step CA"
 
-chown -R step:step /opt/step-ca
-chmod -R 700 /opt/step-ca
+#################
+# verander geldigheidsduur
+# verander domeinen
+# version textfile
+# upgrade via apt ?
+
+msg_ok "Configed Step CA"
 
 msg_info "Creating Service"
 cat <<EOF >/etc/systemd/system/step-ca.service
