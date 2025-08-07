@@ -55,28 +55,10 @@ cat << EOF | sed -i '/"name": "acme"/ r /dev/stdin' /opt/step-ca/config/ca.json
                                         "minTLSCertDuration": "24h",
                                         "maxTLSCertDuration:": "1100h",
                                         "defaultTLSCertDuration": "720h"
-                                },
-   "policy": {
-      "x509": {
-        "allow": {
-          "dns": ["*.kultuer.frl","*.tresoar.nl","*.tresoar.frl"]
-        },
-        "allowWildcardNames": false
-      },
-      "ssh": {
-        "user": {
-          "allow": {
-            "email": ["@local"]
-          }
-        },
-        "host": {
-          "allow": {
-            "dns": ["*.local"]
-          }
-        }
-      }
-    }
+                                }
 EOF
+$STD step-ca version >/opt/step-ca_version.txt
+
 {
   echo "Step CA-Credentials"
   echo "Step CA Password:" `cat /opt/step-ca/CApassword.txt`
