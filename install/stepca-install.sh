@@ -174,10 +174,10 @@ msg_ok "Configured Service"
 #  cat /opt/step-ca/certs/root_ca.crt
   echo -e ""
   echo "${YN}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory"
-  echo "${YN}Documentation how to connect and ACME client to this server:"
+  echo "${YN}Documentation how to connect an ACME client to this server can be found at"
   echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
 } | tee | while read line; do
-  echo -e "echo -e \"$line\""
+  echo "echo -e \"$line\""
 done >> $PROFILE_FILE
 
 motd_ssh
