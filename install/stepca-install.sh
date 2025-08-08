@@ -32,19 +32,19 @@ msg_ok "Installed Step CA"
 # vraag enable auto-update
 # vervang step-ca door $APP
 
-pki_name=$(whiptail --inputbox "What would you like to name your new PKI?" 8 39 Smallstep --title "Config Step CA" 3>&1 1>&2 2>&3)
+pki_name=$(whiptail --inputbox "What would you like to name your new PKI?" 9 48 Smallstep --title "Config Step CA" 3>&1 1>&2 2>&3)
 if [ ! $? ]; then
     echo "User selected Cancel."
     exit 1
 fi
 
-pki_dns=$(whiptail --inputbox "What DNS names or IP addresses will clients use to reach your CA?" 8 39 ca.example.com --title "Config Step CA" 3>&1 1>&2 2>&3)
+pki_dns=$(whiptail --inputbox "What DNS names or IP addresses will clients use to reach your CA?" 9 48 ca.example.com --title "Config Step CA" 3>&1 1>&2 2>&3)
 if [ ! $? ]; then
     echo "User selected Cancel."
     exit 1
 fi
 
-pki_provisioner=$(whiptail --inputbox "What would you like to name the CA's first provisioner?" 8 39 you@smallstep.com --title "Config Step CA" 3>&1 1>&2 2>&3)
+pki_provisioner=$(whiptail --inputbox "What would you like to name the CA's first provisioner?" 9 48 you@smallstep.com --title "Config Step CA" 3>&1 1>&2 2>&3)
 if [ ! $? ]; then
     echo "User selected Cancel."
     exit 1
@@ -52,7 +52,9 @@ fi
 
 msg_info "Config Step CA"
 export STEPPATH="/opt/step-ca"
-mkdir -p /opt/step-ca
+mkdir -p $STEPPATH
+#mkdir -p /opt/step-ca
+
 useradd --user-group --system --home /opt/step-ca --shell /bin/false step
 
 # generate random password for CA and subCA
@@ -84,10 +86,11 @@ step-ca version >/opt/step-ca_version.txt
   echo "Step CA Password:" `cat /opt/step-ca/CApassword.txt`
   echo "Step CA SubCA Password:" `cat /opt/step-ca/password.txt`
   echo "Fingerprint of CA:" `step certificate fingerprint /opt/step-ca/certs/root_ca.crt`
-  echo "Root certificates are available at https://ca.example.com:443/roots.pem"
+  echo "Root certificates are available at https://$pki_dns/roots.pem"
+  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
   cat /opt/step-ca/certs/root_ca.crt
-  echo "ACME server URL: https://ca.example.com:443/acme/acme/directory"
-  echo "ga naar http://... voor een voorbeeld"
+  echo "ACME directory server URL: https://$pki_dns/acme/ACME/directory"
+  echo "https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
 } >>~/stepca.creds
 
 #################
