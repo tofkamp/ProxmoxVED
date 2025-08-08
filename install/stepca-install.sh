@@ -32,15 +32,35 @@ msg_ok "Installed Step CA"
 # vraag enable auto-update
 # vervang step-ca door $APP
 
+pki_name=$(whiptail --inputbox "What would you like to name your new PKI?" 8 39 Smallstep --title "Config Step CA" 3>&1 1>&2 2>&3)
+if [ ! $? ]; then
+    echo "User selected Cancel."
+    exit 1
+fi
+
+pki_dns=$(whiptail --inputbox "What DNS names or IP addresses will clients use to reach your CA?" 8 39 ca.example.com --title "Config Step CA" 3>&1 1>&2 2>&3)
+if [ ! $? ]; then
+    echo "User selected Cancel."
+    exit 1
+fi
+
+pki_provisioner=$(whiptail --inputbox "What would you like to name the CA's first provisioner?" 8 39 you@smallstep.com --title "Config Step CA" 3>&1 1>&2 2>&3)
+if [ ! $? ]; then
+    echo "User selected Cancel."
+    exit 1
+fi
+
 msg_info "Config Step CA"
 export STEPPATH="/opt/step-ca"
 mkdir -p /opt/step-ca
 useradd --user-group --system --home /opt/step-ca --shell /bin/false step
 
+# generate random password for CA and subCA
 openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/CApassword.txt
 openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/password.txt
 
-$STD step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
+$STD step ca init --deployment-type=standalone --name=$pki_name --dns=$pki_dns --address=:443 --provisioner=$pki_provisioner --password-file=/opt/step-ca/CApassword.txt --acme
+#$STD step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
 # change password of subCA
 $STD step crypto change-pass $(step path)/secrets/intermediate_ca_key --password-file=/opt/step-ca/CApassword.txt --new-password-file=/opt/step-ca/password.txt --force
 chown -R step:step /opt/step-ca
@@ -150,4 +170,3 @@ msg_info "Cleaning up"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
-set
