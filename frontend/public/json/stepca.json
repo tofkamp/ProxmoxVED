@@ -14,7 +14,7 @@
     "website": "https://smallstep.com/",
     "logo": "https://smallstep.imgix.net/logo_bfa4201fe5.svg",
     "description": "In the coming years, the lifetime of TLS Certificates will be reduced to 47 days. The best way to handle this fast cycle of certificates rolover is to automate the deployment. Now, with this container you can. You will obtain a private ACME server for all you local webservers.
-It can be used with numerous ACME clients in order to automate the free X.509 certificates deployment. Configure it once, and you can forget about it.",
+It can be used with numerous ACME clients in order to automate the free X.509 certificates deployment. Configure it once, and forget about it.",
     "install_methods": [
         {
             "type": "default",
@@ -35,6 +35,9 @@ It can be used with numerous ACME clients in order to automate the free X.509 ce
     "notes": [
 	{
 	"text": "During installation, you will have to provide the FQDN of this new ACME server",
+	"type": "info"
+	}, {
+	"text": "Use `cat ~/stepca.creds` to see all information about the CA",
 	"type": "info"
 	}
     ]
