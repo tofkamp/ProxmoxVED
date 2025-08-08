@@ -178,11 +178,11 @@ temp_file=`mktemp`
   echo "${YW}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory"
   echo "${YW}Documentation on how to connect an ACME client to this server can be found at"
   echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
-} | tee $temp_file
-
-cat $temp_file | while read line; do
+} >/root/msg.txt
+cat /root/msg.txt
+cat /root/msg.txt | while read line; do
   echo "echo -e \"$line\""
-done >> $PROFILE_FILE
+done > $PROFILE_FILE
 
 motd_ssh
 customize
