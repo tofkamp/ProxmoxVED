@@ -29,15 +29,15 @@ msg_ok "Installed Step CA"
 
 #################
 # vraag FQDN of server
-#vraag domein+ipnr
-#email address
 
 msg_info "Config Step CA"
 mkdir /opt/step-ca
 useradd --user-group --system --home /opt/step-ca --shell /bin/false step
 
-openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/CApassword.txt
-openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/password.txt
+CA_PASS=$(openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33)
+SUBCA_PASS=$(openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33)
+echo $CA_PASS >/opt/step-ca/CApassword.txt
+echo "$SUBCA_PASS" >/opt/step-ca/password.txt
 
 export STEPPATH="/opt/step-ca"
 $STD step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
@@ -45,29 +45,14 @@ $STD step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example
 $STD step crypto change-pass $(step path)/secrets/intermediate_ca_key --password-file=/opt/step-ca/CApassword.txt --new-password-file=/opt/step-ca/password.txt --force
 chown -R step:step /opt/step-ca
 chmod -R og-rwx /opt/step-ca
-# insert in ../config/ca.json
-cat << EOF | sed -i '/"name": "acme"/ r /dev/stdin' /opt/step-ca/config/ca.json
-                                "claims": {
-                                        "enableSSHCA": false,
-                                        "disableRenewal": false,
-                                        "allowRenewalAfterExpiry": false,
-                                        "disableSmallstepExtensions": false,
-                                        "minTLSCertDuration": "24h",
-                                        "maxTLSCertDuration:": "1100h",
-                                        "defaultTLSCertDuration": "720h"
-                                }
-EOF
-$STD step-ca version >/opt/step-ca_version.txt
-
 {
   echo "Step CA-Credentials"
-  echo "Step CA Password:" `cat /opt/step-ca/CApassword.txt`
-  echo "Step CA SubCA Password:" `cat /opt/step-ca/password.txt`
+  echo "Step CA Password: $CA_PASS"
+  echo "Step CA SubCA Password: $SUBCA_PASS"
   echo "Fingerprint of CA:" `step certificate fingerprint /opt/step-ca/certs/root_ca.crt`
   echo "Root certificates are available at https://ca.example.com:443/roots.pem"
-  cat /opt/step-ca/certs/root_ca.crt
   echo "ACME server URL: https://ca.example.com:443/acme/acme/directory"
-  echo "ACME accepted domains:" "local,..."
+  cat /opt/step-ca/certs/root_ca.crt
 } >>~/stepca.creds
 
 #################
