@@ -99,7 +99,7 @@ Group=step
 Environment=STEPPATH=/opt/step-ca
 WorkingDirectory=/opt/step-ca
 ExecStart=/usr/bin/step-ca config/ca.json --password-file password.txt
-ExecReload=/bin/kill --signal HUP $MAINPID
+ExecReload=/bin/kill --signal HUP \$MAINPID
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=30
