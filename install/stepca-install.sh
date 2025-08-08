@@ -168,14 +168,14 @@ msg_ok "Configured Service"
 # ${YW} ${BOLD} ${RD} ${GN}
 {
   echo -e ""
-  echo -e "${YN}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt"
-  echo -e "${YN}or at ${GN}https://$pki_dns/roots.pem"
+  echo "${YN}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt"
+  echo "${YN}or at ${GN}https://$pki_dns/roots.pem"
 #  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
 #  cat /opt/step-ca/certs/root_ca.crt
   echo -e ""
-  echo -e "${YN}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory"
-  echo -e "${YN}Documentation how to connect and ACME client to this server:"
-  echo -e "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
+  echo "${YN}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory"
+  echo "${YN}Documentation how to connect and ACME client to this server:"
+  echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
 } | tee | while read line; do
   echo -e "echo -e \"$line\""
 done >> $PROFILE_FILE
