@@ -180,7 +180,7 @@ temp_file=`mktemp`
   echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
 } >/root/msg.txt
 cat /root/msg.txt
-cat /root/msg.txt | while read line; do
+cat /root/msg.txt | while read -r line; do
   echo "echo -e \"$line\""
 done > $PROFILE_FILE
 
