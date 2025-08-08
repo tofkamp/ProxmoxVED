@@ -170,16 +170,15 @@ customize
 
 # ${YW} ${BOLD} ${RD} ${GN}
 {
+  echo "The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt"
+  echo "or at ${GN}https://$pki_dns/roots.pem"
+#  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
+#  cat /opt/step-ca/certs/root_ca.crt
   echo ""
-  echo "Root certificates are available at https://$pki_dns/roots.pem"
-  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
-  cat /opt/step-ca/certs/root_ca.crt
-  echo ""
-  echo "ACME directory server URL: https://$pki_dns/acme/ACME/directory"
-  echo "https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
-} | while read line; do
-  echo "echo -e \"$line\""
-done >>$PROFILE_FILE
+  echo "The ACME directory server URL: https://$pki_dns/acme/ACME/directory"
+  echo "Documentation how to connect and ACME client to this server:"
+  echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
+} | tee --append $PROFILE_FILE
 
 msg_info "Cleaning up"
 #rm -f "$temp_file"
