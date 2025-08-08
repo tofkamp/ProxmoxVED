@@ -176,11 +176,11 @@ temp_file=`mktemp`
 #  cat /opt/step-ca/certs/root_ca.crt
   echo -e ""
   echo "${YW}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory"
-  echo "${YW}Documentation how to connect an ACME client to this server can be found at"
+  echo "${YW}Documentation on how to connect an ACME client to this server can be found at"
   echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
-} | tee $tempfile
+} | tee $temp_file
 
-cat $tempfile | while read line; do
+cat $temp_file | while read line; do
   echo "echo -e \"$line\""
 done >> $PROFILE_FILE
 
