@@ -27,19 +27,20 @@ $STD apt-get update
 $STD apt-get -y install step-cli step-ca
 msg_ok "Installed Step CA"
 
-#################
+################# https://en.wikibooks.org/wiki/Bash_Shell_Scripting/Whiptail
 # vraag FQDN of server
-#vraag domein+ipnr
-#email address
+# vraag email address
+# vraag enable auto-update
+# vervang step-ca door $APP
 
 msg_info "Config Step CA"
-mkdir /opt/step-ca
-useradd --user-group --system --home /opt/step-ca --shell /bin/false step
+export STEPPATH="/opt/$APP"
+mkdir -p $STEPPATH
+useradd --user-group --system --home $STEPPATH --shell /bin/false step
 
 openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/CApassword.txt
 openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/password.txt
 
-export STEPPATH="/opt/step-ca"
 $STD step ca init --deployment-type=standalone --name=Smallstep --dns=ca.example.com --address=:443 --provisioner=you@smallstep.com --password-file=/opt/step-ca/CApassword.txt --acme
 # change password of subCA
 $STD step crypto change-pass $(step path)/secrets/intermediate_ca_key --password-file=/opt/step-ca/CApassword.txt --new-password-file=/opt/step-ca/password.txt --force
@@ -67,7 +68,7 @@ step-ca version >/opt/step-ca_version.txt
   echo "Root certificates are available at https://ca.example.com:443/roots.pem"
   cat /opt/step-ca/certs/root_ca.crt
   echo "ACME server URL: https://ca.example.com:443/acme/acme/directory"
-  echo "ACME accepted domains:" "local,..."
+  echo "ga naar http://... voor een voorbeeld"
 } >>~/stepca.creds
 
 #################
@@ -139,6 +140,7 @@ EOF
 
 systemctl daemon-reload
 systemctl enable -q --now step-ca
+$STD systemctl status step-ca
 msg_ok "Configured Service"
 
 motd_ssh
@@ -149,3 +151,5 @@ msg_info "Cleaning up"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
+set >/root/env
+set
