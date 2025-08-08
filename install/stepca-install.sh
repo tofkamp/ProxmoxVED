@@ -168,6 +168,19 @@ msg_ok "Configured Service"
 motd_ssh
 customize
 
+# ${YW} ${BOLD} ${RD} ${GN}
+{
+  echo ""
+  echo "Root certificates are available at https://$pki_dns/roots.pem"
+  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
+  cat /opt/step-ca/certs/root_ca.crt
+  echo ""
+  echo "ACME directory server URL: https://$pki_dns/acme/ACME/directory"
+  echo "https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
+} | while read line; do
+  echo "echo -e \"$line\""
+done >>$PROFILE_FILE
+
 msg_info "Cleaning up"
 #rm -f "$temp_file"
 $STD apt-get -y autoremove
