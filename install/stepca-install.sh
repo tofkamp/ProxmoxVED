@@ -166,7 +166,8 @@ systemctl enable -q --now step-ca
 msg_ok "Configured Service"
 
 # ${YW} ${BOLD} ${RD} ${GN}
-PROFILE_FILE="/etc/profile.d/00_lxc-details.sh"
+PROFILE_FILE="/etc/profile.d/10_stepca-details.sh"
+temp_file=`mktemp`
 {
   echo -e ""
   echo "${YW}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt"
@@ -177,7 +178,9 @@ PROFILE_FILE="/etc/profile.d/00_lxc-details.sh"
   echo "${YW}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory"
   echo "${YW}Documentation how to connect an ACME client to this server can be found at"
   echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/"
-} | tee /dev/stderr | while read line; do
+} | tee $tempfile
+
+cat $tempfile | while read line; do
   echo "echo -e \"$line\""
 done >> $PROFILE_FILE
 
@@ -185,7 +188,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-#rm -f "$temp_file"
+rm -f "$temp_file"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
