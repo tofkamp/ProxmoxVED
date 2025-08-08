@@ -169,17 +169,19 @@ msg_ok "Configured Service"
 PROFILE_FILE="/etc/profile.d/10_stepca-details.sh"
 temp_file=`mktemp`
 {
-  echo "{$CL}"
-  echo "${YW}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt{$CL}"
-  echo "${YW}or at ${GN}https://$pki_dns/roots.pem{$CL}"
+  echo "${CL}"
+  echo "${YW}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt${CL}"
+  echo "${YW}or at ${GN}https://$pki_dns/roots.pem${CL}"
 #  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
 #  cat /opt/step-ca/certs/root_ca.crt
-  echo -e "{$CL}"
-  echo "${YW}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory{$CL}"
-  echo "${YW}Documentation on how to connect an ACME client to this server can be found at{$CL}"
-  echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/{$CL}"
+  echo -e "${CL}"
+  echo "${YW}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory${CL}"
+  echo "${YW}Documentation on how to connect an ACME client to this server can be found at${CL}"
+  echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/${CL}"
 } >/root/msg.txt
-cat /root/msg.txt
+cat /root/msg.txt | while read -r line; do
+  echo -e " $line"
+done
 cat /root/msg.txt | while read -r line; do
   echo "echo -e \" $line\""
 done > $PROFILE_FILE
