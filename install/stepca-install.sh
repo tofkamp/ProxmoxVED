@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Tjibbe Hofkamp (tofkamp)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,9 +33,9 @@ msg_ok "Installed Step CA"
 # vervang step-ca door $APP
 
 msg_info "Config Step CA"
-export STEPPATH="/opt/${APP}"
-mkdir -p ${STEPPATH}
-useradd --user-group --system --home ${STEPPATH} --shell /bin/false step
+export STEPPATH="/opt/setp-ca"
+mkdir -p /opt/setp-ca
+useradd --user-group --system --home /opt/setp-ca --shell /bin/false step
 
 openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/CApassword.txt
 openssl rand -base64 99 | tr -dc 'a-zA-Z0-9' | head -c33 >/opt/step-ca/password.txt
@@ -151,5 +150,4 @@ msg_info "Cleaning up"
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"
-set >/root/env
 set

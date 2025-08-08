@@ -5,7 +5,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/tofkamp/ProxmoxVED/refs/he
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://smallstep.com/docs/step-ca/
 
-APP="stepca"
+APP="StepCA"
 var_tags="${var_tags:-CA;ACME-srv}"
 var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-2048}"
