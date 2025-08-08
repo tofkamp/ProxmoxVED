@@ -20,54 +20,17 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
-  if [[ ! -d /opt/step-ca ]]; then
-    msg_error "No ${APP} Installation Found!"
+    header_info
+    check_container_storage
+    check_container_resources
+    if [[ ! -d /opt/step-ca ]]; then
+        msg_error "No ${APP} Installation Found!"
+        exit
+    fi
+    msg_error "Currently we don't provide an update function for this ${APP}."
     exit
-  fi
-  ################### code is not for step, needs work !!!!!
-  RELEASE=$(curl -fsSL https://api.github.com/repos/snipe/snipe-it/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": "v([^"]+).*/\1/')
-  if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
-    msg_info "Stopping Services"
-    systemctl stop step-ca
-    msg_ok "Services Stopped"
-
-    msg_info "Updating ${APP} to v${RELEASE}"
-    $STD apt-get update
-    $STD apt-get -y upgrade
-    mv /opt/snipe-it /opt/snipe-it-backup
-    temp_file=$(mktemp)
-    curl -fsSL "https://github.com/snipe/snipe-it/archive/refs/tags/v${RELEASE}.tar.gz" -o "$temp_file"
-    tar zxf "$temp_file"
-    mv "snipe-it-${RELEASE}" /opt/snipe-it
-    cp /opt/snipe-it-backup/.env /opt/snipe-it/.env
-    cp -r /opt/snipe-it-backup/public/uploads/ /opt/snipe-it/public/uploads/
-    cp -r /opt/snipe-it-backup/storage/private_uploads /opt/snipe-it/storage/private_uploads
-    cd /opt/snipe-it/ || exit
-    export COMPOSER_ALLOW_SUPERUSER=1
-    $STD composer install --no-dev --optimize-autoloader --no-interaction
-    $STD composer dump-autoload
-    $STD php artisan migrate --force
-    $STD php artisan config:clear
-    $STD php artisan route:clear
-    $STD php artisan cache:clear
-    $STD php artisan view:clear
-    chown -R step: /opt/step-ca
-    chmod -R 700 /opt/snipe-it
-    rm -rf "$temp_file"
-    rm -rf /opt/snipe-it-backup
-    msg_ok "Updated ${APP}"
-
-    msg_info "Starting Service"
-    systemctl start stepca
-    msg_ok "Started Service"
-  else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
-  fi
-  exit
 }
+
 
 start
 build_container

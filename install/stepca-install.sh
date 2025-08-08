@@ -167,14 +167,14 @@ PROFILE_FILE="/etc/profile.d/10_stepca-details.sh"
 temp_file=`mktemp`
 {
   echo "${YW}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt${CL}"
-  echo "${YW}or at ${GN}https://$pki_dns/roots.pem${CL}"
+  echo "${YW}or at ${BGN}https://$pki_dns/roots.pem${CL}"
   echo "${YW}Fingerprint of CA${GN}"`step certificate fingerprint /opt/step-ca/certs/root_ca.crt`"${CL}"
 #  step certificate inspect /opt/step-ca/certs/root_ca.crt --short
 #  cat /opt/step-ca/certs/root_ca.crt
   echo -e "${CL}"
-  echo "${YW}The ACME directory server URL is ${GN}https://$pki_dns/acme/ACME/directory${CL}"
+  echo "${YW}The ACME directory server URL is ${BGN}https://$pki_dns/acme/ACME/directory${CL}"
   echo "${YW}Documentation on how to connect an ACME client to this server can be found at${CL}"
-  echo "${GN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/${CL}"
+  echo "${BGN}https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/${CL}"
   echo "${CL}"
 } >$temp_file
 echo "${CL}"
