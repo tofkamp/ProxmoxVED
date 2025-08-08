@@ -6,7 +6,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/tofkamp/ProxmoxVED/refs/he
 # Source: https://smallstep.com/docs/step-ca/
 
 APP="StepCA"
-var_tags="${var_tags:-CA;ACME-srv}"
+var_tags="${var_tags:-CA;ACME}"
 var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-2048}"
 var_disk="${var_disk:-4}"

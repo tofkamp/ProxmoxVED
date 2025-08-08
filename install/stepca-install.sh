@@ -83,8 +83,8 @@ step-ca version >/opt/step-ca_version.txt
 
 {
   echo "Step CA-Credentials"
-  echo "Step CA Password:" `cat /opt/step-ca/CApassword.txt`
-  echo "Step CA SubCA Password:" `cat /opt/step-ca/password.txt`
+  echo "Step CA Private key password:" `cat /opt/step-ca/CApassword.txt`
+  echo "  SubCA Private key password:" `cat /opt/step-ca/password.txt`
   echo "Fingerprint of CA:" `step certificate fingerprint /opt/step-ca/certs/root_ca.crt`
   echo "Root certificates are available at https://$pki_dns/roots.pem"
   step certificate inspect /opt/step-ca/certs/root_ca.crt --short
