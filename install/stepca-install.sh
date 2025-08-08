@@ -166,6 +166,7 @@ systemctl enable -q --now step-ca
 msg_ok "Configured Service"
 
 # ${YW} ${BOLD} ${RD} ${GN}
+PROFILE_FILE="/etc/profile.d/00_lxc-details.sh"
 {
   echo -e ""
   echo "${YW}The public key of the root CA can be found at ${GN}/opt/step-ca/certs/root_ca.crt"
